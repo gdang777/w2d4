@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include partials/_header%>
+
+<style>
+    table {
+    border-collapse: collapse;
+}
+    table, th, td {
+    border: 1px solid black;
+    }
+</style>
+</head>
+<body>
+    <h1>MY Link Shortner</h1>
+<form action="/urls/<%=shortURL %>/update" method= "POST">
+ShortURL:<%=shortURL%> <br>
+<input type="text" name="longUrl" value="<%=longURL%>"
+<br>
+<input type="submit" value="UPDATE">
+</form> 
+
+
+</body>
+
+</html>
+

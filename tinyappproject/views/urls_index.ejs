@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include partials/_header%>
+<style>
+    table {
+    border-collapse: collapse;
+}
+    table, th, td {
+    border: 1px solid black;
+    }
+</style>
+</head>
+<body>
+    <h1>My Link Shortner</h1>
+    <table>
+       <tr>
+         <th>Url</th>
+         <th>Short link</th>
+         <th>Remove</th>
+       </tr>
+       <tr>
+            <% for (urlKey in urls) { %>
+        <td><%= urls[urlKey] %></td>
+        <td> <%= urlKey %></td>
+        <td><form action="/urls/<%=urlKey%>/delete" method="POST">
+            <button type="submit">delete</button>
+            </form>
+            <td> <a href="/urls/<%=urlKey%>">Edit link</a>
+            </td>
+        </td>
+        <br/>
+        </tr>
+        
+    <% } %>
+     </table>
+     <br/><button><a href='/urls/new'>shorten your link</a></button>
+
+
+
+</body>
+
+</html>
