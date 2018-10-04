@@ -100,8 +100,8 @@ app.post('/login',(req,res)=>{
 });
 //
 app.post('/logout',(req,res) => {
-   res.clearCookie("username");
-   res.redirect('/urls');
+    res.clearCookie("username");
+    res.redirect('/urls');
 });
 //
 app.get('/Hello',(req,res)=> {
@@ -109,17 +109,24 @@ app.get('/Hello',(req,res)=> {
 });
 //
 app.post('/register', (req,res) => {
-  const username = req.body.email ;
-  const password = req.body.password
-  const userRandomId = generateRandomString();
-  users[userRandomId] = {
-      id: userRandomId ,
-      email: username,
-      password: password
-  };
-  console.log(users ,"Test");
-  res.cookie("user_id",userRandomId);
-  res.redirect("/urls");
+    const username = req.body.email;
+
+    if(!username || !password) {
+        res.status(400).send("Username or password could not be left blank");
+        return;
+    }    
+  
+//   const username = req.body.email ;
+    const password = req.body.password
+    const userRandomId = generateRandomString();
+    users[userRandomId] = {
+        id: userRandomId,
+        email: username,
+        password: password
+    };
+    console.log(users ,"Test");
+    res.cookie("user_id",userRandomId);
+    res.redirect("/urls");
 });
 // registration page
 app.get('/register', (req,res) => {
