@@ -137,10 +137,10 @@ app.post('/login',(req,res)=> {
             console.log(req.body.user,"test");
             res.redirect('/urls');
          } else {
-            res.status(400).send("Username or password could not be left blank");
+            res.status(403).send("Password is not valid.");
          }
     } else {
-        res.status(403).send("Password is not valid");
+        res.status(403).send("User is not registered");
     }
 });
 
@@ -155,42 +155,32 @@ app.get('/Hello',(req,res)=> {
 });
 //
 app.post('/register', (req,res) => {
-    const username = req.body.email;
+    const email = req.body.email;
     const password = req.body.password;
-    if(!username || !password) {
-        res.status(400).send("Username or password could not be left blank");
+    if(!email || !password) {
+        res.status(400).send("Email or password could not be left blank");
         return;
     } 
-    if(checkUserFromEmail(username)) {
+    if(checkUserFromEmail(email)) {
         res.status(403).send('Email already registered. Please try another email');
     } else {
         var userRandomId = generateRandomString();
         users[userRandomId] = {
-                id: userRandomId,
-                email: username,
-                password: password
+            id: userRandomId,
+            email: email,
+            password: password
         };
     res.cookie("user_id",userRandomId);
     res.redirect('/urls');
 }
-// //   const username = req.body.email ;
-//     var userRandomId = generateRandomString();
-//     users[userRandomId] = {
-//         id: userRandomId,
-//         email: username,
-//         password: password
-//     };
-//     console.log(users ,"Test");
-//     res.cookie("user_id",userRandomId);
-//     res.redirect("/urls");
+
 });
+
 // registration page
 app.get('/register', (req,res) => {
-    // res.send("lets register");
-    const templateVars = {username: req.cookies["username"]};
-    // console.log(username,"test");
-    res.render('registration', templateVars);
+    res.render('registration');
 });
+
 // server listening
 app.listen(port, () =>{
     console.log(`Example app listening on port ${port}!`);
