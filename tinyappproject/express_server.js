@@ -77,7 +77,7 @@ app.get("/u/:shortURL",(req,res)=> {
 // Get/Login endpoint
 app.get('/login', (req,res)=> {
     var templateVars = {
-        user: users[req.cookies["user_id"]]   
+        user: users[req.cookies["user_id"]]     
     }
     res.render('newlogin', templateVars);
 });
