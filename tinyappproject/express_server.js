@@ -18,8 +18,17 @@ function generateRandomString() {
   }
   return string;
 }
+function checkUserFromEmail(email){
+    for (var userId in users){
+       var user = users[userId];
+       var checkEmail = user.email 
+       if(checkEmail === email){
+           return user;
+       }
+    }
+}
 
-const users = { 
+var users = { 
     "userRandomID": {
       id: "userRandomID", 
       email: "user@example.com", 
@@ -49,6 +58,7 @@ app.get('/urls', (req,res)=> {
         user: users[req.cookies["user_id"]],
         urls: urlDatabase
     };
+    console.log(templatevars);
     res.render('urls_index',templatevars);
 });
 app.get("/urls/new", (req, res) => {
@@ -62,9 +72,11 @@ app.get("/urls/:id", (req, res) => {
     const shortURL = req.params.id;
     const longURL = urlDatabase[shortURL];
     let templateVars = { 
-        username:req.cookies["username"],
+        user:users[req.cookies["user_id"]],
         shortURL: shortURL, longURL: longURL
     };
+
+  
     res.render("urls_show", templateVars);  
 });
 app.get("/u/:shortURL",(req,res)=> {
@@ -79,7 +91,9 @@ app.get('/login', (req,res)=> {
     var templateVars = {
         user: users[req.cookies["user_id"]]     
     }
+    console.log(templateVars,"Test");
     res.render('newlogin', templateVars);
+    
 });
 //handling the delete request from the delete button
 app.post('/urls/:id/delete', (req,res)=>{
@@ -101,10 +115,35 @@ app.post('/urls/:id/update', (req, res)=>{
     res.redirect('/urls');
 });
 //
-app.post('/login',(req,res)=>{
-    res.cookie("user_id",req.body.user);
-    res.redirect('/urls');
+app.post('/login',(req,res)=> {
+    const email = req.body.email;
+    const password = req.body.password;
+    if (!email || !password) {
+        // console.log(email ,password , "test");
+        res.status(400).send("Username or password could not be left blank");
+        return;
+    }
+
+    // At this point we have an email and password from the frontend.
+    // We also have the function checkUserFromEmail()
+    //  1) is this a valid email?
+    //  2) is the password the right password for that email?
+    //  3) suppose all that's true.  what's their user_id?
+    //  4) set the cookie and redirect
+    var user = checkUserFromEmail(email);
+    if (user) {
+        if(user.password === password){
+            res.cookie("user_id",user.id);
+            console.log(req.body.user,"test");
+            res.redirect('/urls');
+         } else {
+            res.status(400).send("Username or password could not be left blank");
+         }
+    } else {
+        res.status(403).send("Password is not valid");
+    }
 });
+
 //
 app.post('/logout',(req,res) => {
     res.clearCookie("user_id");
@@ -117,27 +156,39 @@ app.get('/Hello',(req,res)=> {
 //
 app.post('/register', (req,res) => {
     const username = req.body.email;
-    const password = req.body.password
-
+    const password = req.body.password;
     if(!username || !password) {
         res.status(400).send("Username or password could not be left blank");
         return;
-    }    
-//   const username = req.body.email ;
-    const userRandomId = generateRandomString();
-    users[userRandomId] = {
-        id: userRandomId,
-        email: username,
-        password: password
-    };
-    console.log(users ,"Test");
+    } 
+    if(checkUserFromEmail(username)) {
+        res.status(403).send('Email already registered. Please try another email');
+    } else {
+        var userRandomId = generateRandomString();
+        users[userRandomId] = {
+                id: userRandomId,
+                email: username,
+                password: password
+        };
     res.cookie("user_id",userRandomId);
-    res.redirect("/urls");
+    res.redirect('/urls');
+}
+// //   const username = req.body.email ;
+//     var userRandomId = generateRandomString();
+//     users[userRandomId] = {
+//         id: userRandomId,
+//         email: username,
+//         password: password
+//     };
+//     console.log(users ,"Test");
+//     res.cookie("user_id",userRandomId);
+//     res.redirect("/urls");
 });
 // registration page
 app.get('/register', (req,res) => {
     // res.send("lets register");
     const templateVars = {username: req.cookies["username"]};
+    // console.log(username,"test");
     res.render('registration', templateVars);
 });
 // server listening

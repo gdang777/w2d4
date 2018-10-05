@@ -1,19 +1,14 @@
-<!-- <title> My Link Shortner </title> -->
-<!-- <% if(user){ %>
-    <p>Welcome <%=user.id %></p>
+<title> My Link Shortner </title>
+ <% if(user){ %>
+    <p>Welcome <%= user.email %></p>
     <form method="POST" action="/logout">
         <input type="submit" name="submit" value="Logout" />
     </form>
-<% }else{ %>
+<% } else { %>
     <form action="/login" method="POST">
         <label for="longURL"> Username</label>
         <input type="text" name="username" placeholder="" style="width: 200px">
         <input type="text" name="password" placeholder="" style="width: 200px">
         <input type="submit" value="Submit">
-    </form> -->
-<a href="/register">Register</a>
-
-<a href="/login">Login</a>
-
-
-<!-- <% } %> -->
+    </form>
+<% } %>
