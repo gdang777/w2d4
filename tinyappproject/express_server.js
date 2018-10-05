@@ -46,16 +46,16 @@ app.get("/urls.json",(req, res)=> {
 });
 app.get('/urls', (req,res)=> {
     let templatevars = {
-        username: req.cookies["username"],
+        user: users[req.cookies["user_id"]],
         urls: urlDatabase
     };
     res.render('urls_index',templatevars);
 });
 app.get("/urls/new", (req, res) => {
     var templateVars = {
-        username: req.cookies["username"]
+        user: users[req.cookies["user_id"]]   
     }
-    // console.log("test",req.cookies["username"] );
+    console.log("test",users[req.cookies["user_id"]] );
     res.render("urls_new", templateVars );
 });
 app.get("/urls/:id", (req, res) => {
@@ -73,7 +73,14 @@ app.get("/u/:shortURL",(req,res)=> {
     const longUrl = urlDatabase[shortURL];
     // console.log(longUrl, 'Test2');
     res.redirect(longUrl);
-})
+});
+// Get/Login endpoint
+app.get('/login', (req,res)=> {
+    var templateVars = {
+        user: users[req.cookies["user_id"]]   
+    }
+    res.render('newlogin', templateVars);
+});
 //handling the delete request from the delete button
 app.post('/urls/:id/delete', (req,res)=>{
     delete urlDatabase[req.params.id];
@@ -87,7 +94,7 @@ app.post('/urls', (req,res)=>{
     urlDatabase[shortURL] = longURL ;
     res.redirect('/urls');
     
-})
+});
 //handling the delete request from the delete button
 app.post('/urls/:id/update', (req, res)=>{
     urlDatabase[req.params.id] = req.body.longUrl
@@ -95,12 +102,12 @@ app.post('/urls/:id/update', (req, res)=>{
 });
 //
 app.post('/login',(req,res)=>{
-    res.cookie("username",req.body.username);
+    res.cookie("user_id",req.body.user);
     res.redirect('/urls');
 });
 //
 app.post('/logout',(req,res) => {
-    res.clearCookie("username");
+    res.clearCookie("user_id");
     res.redirect('/urls');
 });
 //
@@ -110,14 +117,13 @@ app.get('/Hello',(req,res)=> {
 //
 app.post('/register', (req,res) => {
     const username = req.body.email;
+    const password = req.body.password
 
     if(!username || !password) {
         res.status(400).send("Username or password could not be left blank");
         return;
     }    
-  
 //   const username = req.body.email ;
-    const password = req.body.password
     const userRandomId = generateRandomString();
     users[userRandomId] = {
         id: userRandomId,
