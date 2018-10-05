@@ -62,12 +62,18 @@ app.get('/urls', (req,res)=> {
     res.render('urls_index',templatevars);
 });
 app.get("/urls/new", (req, res) => {
+    const user = users[req.cookies["user_id"]] 
     var templateVars = {
-        user: users[req.cookies["user_id"]]   
+        user: user   
     }
-    console.log("test",users[req.cookies["user_id"]] );
-    res.render("urls_new", templateVars );
+    if(!user){ 
+        res.redirect("/login");
+    }else{
+        console.log("test",users[req.cookies["user_id"]] );
+        res.render("urls_new", templateVars );
+    } 
 });
+
 app.get("/urls/:id", (req, res) => {
     const shortURL = req.params.id;
     const longURL = urlDatabase[shortURL];
@@ -120,7 +126,7 @@ app.post('/login',(req,res)=> {
     const password = req.body.password;
     if (!email || !password) {
         // console.log(email ,password , "test");
-        res.status(400).send("Username or password could not be left blank");
+        res.status(400).send("Email or password could not be left blank");
         return;
     }
 
