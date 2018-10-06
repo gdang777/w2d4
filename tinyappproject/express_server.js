@@ -10,12 +10,12 @@ var cookieParser = require('cookie-parser')
 app.use(cookieParser());
 
 function generateRandomString() {
- let string = "";
- var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let string = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (var i = 0; i < 6; i++){
-    string += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
+    for (var i = 0; i < 6; i++){
+        string += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
   return string;
 }
 function checkUserFromEmail(email){
@@ -32,7 +32,7 @@ function urlsForUserId(passedUserId){
     for(var entry in urlDatabase){
         if(urlDatabase[entry].userId === passedUserId){
             newObj[entry] = urlDatabase[entry].longUrl;
-            console.log("newobj check in the function", newObj)
+            // console.log("newobj check in the function", newObj)
         }
     }
     return newObj;
@@ -64,24 +64,22 @@ app.get("/urls.json",(req, res)=> {
 });
 app.get('/urls', (req,res)=> {
     let verifiedCookie = req.cookies["user_id"];
-    console.log("Checking for cookies",verifiedCookie);
+    // console.log("Checking for cookies",verifiedCookie);
     if(verifiedCookie){
-        console.log("Checking if statement in cookies");
+        // console.log("Checking if statement in cookies");
         //Get the urls for that user.
         let resultUrls = urlsForUserId(verifiedCookie);
-        console.log("checking for newObj values" ,resultUrls);
+        // console.log("checking for newObj values" ,resultUrls);
         let templatevars = {
             user: users[req.cookies.user_id],
             urls: resultUrls
         };
-        console.log("these are templatevars in GET/urls:" ,templatevars);
+        // console.log("these are templatevars in GET/urls:" ,templatevars);
         res.render('urls_index',templatevars);
-    } else{
-        console.log("cookiechecker -else");
+    }else{
+        // console.log("cookiechecker -else");
         res.redirect('/login');
-    }
-
-   
+    } 
 });
 app.get("/urls/new", (req, res) => {
     const user = users[req.cookies.user_id] 
@@ -91,7 +89,7 @@ app.get("/urls/new", (req, res) => {
     if(!user){ 
         res.redirect("/login");
     }else {
-        console.log("test",users[req.cookies["user_id"]] );
+        // console.log("test",users[req.cookies["user_id"]] );
         res.render("urls_new", templateVars );
     } 
 });
@@ -104,7 +102,6 @@ app.get("/urls/:id", (req, res) => {
         user:users[req.cookies.user_id],
         shortURL: shortURL, longURL: longURL
     };
-  
     res.render("urls_show", templateVars);  
 });
 app.get("/u/:shortURL",(req,res)=> {
@@ -119,7 +116,7 @@ app.get('/login', (req,res)=> {
     var templateVars = {
         user: users[req.cookies["user_id"]]     
     }
-    console.log(templateVars,"Test");
+    // console.log(templateVars,"Test");
     res.render('newlogin', templateVars);
     
 });
@@ -138,7 +135,7 @@ app.post('/urls', (req,res)=>{
     var longURL = req.body.longURL
     // console.log(req.body.longURL);
     urlDatabase[shortURL] = {longUrl: longURL, userId : req.cookies.user_id}
-    console.log("test", urlDatabase);
+    // console.log("test", urlDatabase);
     res.redirect('/urls');
 });
 //handling the delete request from the delete button
@@ -166,12 +163,12 @@ app.post('/login',(req,res)=> {
     if (user) {
         if(user.password === password){
             res.cookie("user_id",user.id);
-            console.log(req.body.user,"test");
+            // console.log(req.body.user,"test");
             res.redirect('/urls');
-         } else {
+        }else {
             res.status(403).send("Password is not valid.");
-         }
-    } else {
+        }
+    }else {
         res.status(403).send("User is not registered");
     }
 });
@@ -195,7 +192,7 @@ app.post('/register', (req,res) => {
     } 
     if(checkUserFromEmail(email)) {
         res.status(403).send('Email already registered. Please try another email');
-    } else {
+    }else {
         var userRandomId = generateRandomString();
         users[userRandomId] = {
             id: userRandomId,
@@ -204,8 +201,7 @@ app.post('/register', (req,res) => {
         };
     res.cookie("user_id",userRandomId);
     res.redirect('/urls');
-}
-
+    }
 });
 
 // registration page
