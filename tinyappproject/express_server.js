@@ -42,9 +42,9 @@ var users = {
   };
 
 var urlDatabase = {
-    "b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xk": "http://www.google.com",
-    "asdfas": "http://zombo.com",
+    "b2xVn2":{ longUrl:"http://www.lighthouselabs.ca", userId:"fjwj45"},
+    "9sm5xk": {longUrl:"http://www.google.com", userId:"jsdfh3"},
+    "asdfas":{ longUrl: "http://zombo.com", userId:"6f6fh3"}
 };
 
 app.get("/",(req, res)=>{
@@ -68,7 +68,7 @@ app.get("/urls/new", (req, res) => {
     }
     if(!user){ 
         res.redirect("/login");
-    }else{
+    }else {
         console.log("test",users[req.cookies["user_id"]] );
         res.render("urls_new", templateVars );
     } 
@@ -102,18 +102,22 @@ app.get('/login', (req,res)=> {
     
 });
 //handling the delete request from the delete button
-app.post('/urls/:id/delete', (req,res)=>{
-    delete urlDatabase[req.params.id];
-    res.redirect('/urls');
+app.post('/urls/:id/delete', (req,res)=> {
+    if (urlDatabase[req.params.id].userId === req.cookies.user_id){
+        delete urlDatabase[req.params.id];
+        res.redirect('/urls');
+    }else { 
+        res.send("You are not authorized to delete this link, Please hit the back button");
+    }
 });
 //
 app.post('/urls', (req,res)=>{
     var shortURL = generateRandomString();
     var longURL = req.body.longURL
     // console.log(req.body.longURL);
-    urlDatabase[shortURL] = longURL ;
+    urlDatabase[shortURL] = {longUrl: longURL, userId : req.cookies.user_id}
+    console.log("test", urlDatabase);
     res.redirect('/urls');
-    
 });
 //handling the delete request from the delete button
 app.post('/urls/:id/update', (req, res)=>{

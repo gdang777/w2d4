@@ -21,7 +21,7 @@
        </tr>
        <tr>
             <% for (urlKey in urls) { %>
-        <td><%= urls[urlKey] %></td>
+        <td><%= urls[urlKey].longUrl %></td>
         <td> <%= urlKey %></td>
         <td><form action="/urls/<%=urlKey%>/delete" method="POST">
             <button type="submit">delete</button>
