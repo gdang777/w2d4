@@ -63,19 +63,18 @@ app.get("/urls.json",(req, res)=> {
     res.json(urlDatabase);
 });
 app.get('/urls', (req,res)=> {
-    //1. You need to verify whether the user is logged in
     let verifiedCookie = req.cookies["user_id"];
     console.log("Checking for cookies",verifiedCookie);
     if(verifiedCookie){
         console.log("Checking if statement in cookies");
         //Get the urls for that user.
-        let result = urlsForUserId(verifiedCookie);
-        console.log("checking for newObj values" ,result);
+        let resultUrls = urlsForUserId(verifiedCookie);
+        console.log("checking for newObj values" ,resultUrls);
         let templatevars = {
             user: users[req.cookies.user_id],
-            urls: urlDatabase
+            urls: resultUrls
         };
-        console.log(templatevars);
+        console.log("these are templatevars in GET/urls:" ,templatevars);
         res.render('urls_index',templatevars);
     } else{
         console.log("cookiechecker -else");
