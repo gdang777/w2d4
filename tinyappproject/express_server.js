@@ -3,6 +3,7 @@ const app = express();
 app.set('view engine','ejs');
 const port = 8080;
 const bodyParser = require("body-parser");
+const bcrypt = require('bcrypt');
 app.use(bodyParser.urlencoded({extended: true}));
 
 var cookieParser = require('cookie-parser')
@@ -48,7 +49,7 @@ var users = {
       email: "user2@example.com", 
       password: "dishwasher-funk"
     }
-  };
+};
 
 var urlDatabase = {
     "b2xVn2":{ longUrl:"http://www.lighthouselabs.ca", userId:"fjwj45"},
@@ -183,12 +184,13 @@ app.post('/login',(req,res)=> {
     //  4) set the cookie and redirect
     var user = checkUserFromEmail(email);
     if (user) {
-        if(user.password === password){
+        //Check for the userpassword
+        if(bcrypt.compareSync(password, user.password)){ // returns true
             res.cookie("user_id",user.id);
-            // console.log(req.body.user,"test");
+            console.log(req.body.user,"test");
             res.redirect('/urls');
         }else {
-            res.status(403).send("Password is not valid.");
+            res.status(403).send("Username / Password is not valid.");
         }
     }else {
         res.status(403).send("User is not registered");
@@ -208,6 +210,7 @@ app.get('/Hello',(req,res)=> {
 app.post('/register', (req,res) => {
     const email = req.body.email;
     const password = req.body.password;
+    const hashedPassword = bcrypt.hashSync(password ,10);
     if(!email || !password) {
         res.status(400).send("Email or password could not be left blank");
         return;
@@ -219,8 +222,10 @@ app.post('/register', (req,res) => {
         users[userRandomId] = {
             id: userRandomId,
             email: email,
-            password: password
+            password: hashedPassword
         };
+        console.log("After REGISTRATION");
+        console.log(users);
     res.cookie("user_id",userRandomId);
     res.redirect('/urls');
     }
