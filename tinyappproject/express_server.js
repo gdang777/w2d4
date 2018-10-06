@@ -27,7 +27,16 @@ function checkUserFromEmail(email){
        }
     }
 }
-
+function urlsForUserId(passedUserId){
+    var newObj ={};
+    for(var entry in urlDatabase){
+        if(urlDatabase[entry].userId === passedUserId){
+            newObj[entry] = urlDatabase[entry].longUrl;
+            console.log("newobj check in the function", newObj)
+        }
+    }
+    return newObj;
+}
 var users = { 
     "userRandomID": {
       id: "userRandomID", 
@@ -54,15 +63,29 @@ app.get("/urls.json",(req, res)=> {
     res.json(urlDatabase);
 });
 app.get('/urls', (req,res)=> {
-    let templatevars = {
-        user: users[req.cookies["user_id"]],
-        urls: urlDatabase
-    };
-    console.log(templatevars);
-    res.render('urls_index',templatevars);
+    //1. You need to verify whether the user is logged in
+    let verifiedCookie = req.cookies["user_id"];
+    console.log("Checking for cookies",verifiedCookie);
+    if(verifiedCookie){
+        console.log("Checking if statement in cookies");
+        //Get the urls for that user.
+        let result = urlsForUserId(verifiedCookie);
+        console.log("checking for newObj values" ,result);
+        let templatevars = {
+            user: users[req.cookies.user_id],
+            urls: urlDatabase
+        };
+        console.log(templatevars);
+        res.render('urls_index',templatevars);
+    } else{
+        console.log("cookiechecker -else");
+        res.redirect('/login');
+    }
+
+   
 });
 app.get("/urls/new", (req, res) => {
-    const user = users[req.cookies["user_id"]] 
+    const user = users[req.cookies.user_id] 
     var templateVars = {
         user: user   
     }
@@ -76,12 +99,12 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
     const shortURL = req.params.id;
-    const longURL = urlDatabase[shortURL];
+    const longURL = urlDatabase[shortURL].longUrl;
+    // console.log("Long Url from  GETurl/:id", longURL )
     let templateVars = { 
-        user:users[req.cookies["user_id"]],
+        user:users[req.cookies.user_id],
         shortURL: shortURL, longURL: longURL
     };
-
   
     res.render("urls_show", templateVars);  
 });
