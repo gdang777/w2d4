@@ -95,15 +95,30 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-    const shortURL = req.params.id;
-    const longURL = urlDatabase[shortURL].longUrl;
-    // console.log("Long Url from  GETurl/:id", longURL )
-    let templateVars = { 
-        user:users[req.cookies.user_id],
-        shortURL: shortURL, longURL: longURL
-    };
-    res.render("urls_show", templateVars);  
-});
+
+    if(req.cookies["user_id"]){
+        if(urlDatabase[req.params.id].userId === req.cookies["user_id"]){
+            //everything ok
+            const shortURL = req.params.id;
+            const longURL = urlDatabase[shortURL].longUrl;
+            // console.log("Long Url from  GETurl/:id", longURL )
+            let templateVars = { 
+                user:users[req.cookies.user_id],
+                shortURL: shortURL, longURL: longURL
+            };
+            res.render("urls_show", templateVars);  
+        
+        } else{
+            res.send("Sorry this url does not belongs to you");
+        }
+    }else{
+        //redirect him to the page
+        // console.log("we are in the else part");
+        let longURL = urlDatabase[req.params.id].longUrl;
+        res.redirect(longURL);
+        //res.send("sorry you are not logged in");
+    }
+});  
 app.get("/u/:shortURL",(req,res)=> {
     const shortURL = req.params.shortURL;
     // console.log(shortURL,"test1");
@@ -140,7 +155,14 @@ app.post('/urls', (req,res)=>{
 });
 //handling the delete request from the delete button
 app.post('/urls/:id/update', (req, res)=>{
-    urlDatabase[req.params.id] = req.body.longUrl
+
+   // "b2xVn2":{ longUrl:"http://www.lighthouselabs.ca", userId:"fjwj45"},
+
+    let tempData = {
+        longUrl: req.body.longUrl,
+        userId : req.cookies["user_id"]
+    }
+    urlDatabase[req.params.id] = tempData;
     res.redirect('/urls');
 });
 //
