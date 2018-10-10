@@ -1,20 +1,25 @@
-<title> Tiny App </title>
-<p><b>Login</b></p>
-<% if(user){ %>
-    <p>Welcome <%=user.id %></p>
-    <form method="POST" action="/logout">
-        <input type="submit" name="submit" value="Logout" />
-    </form>
-<% }else{ %>
-    <form action="/login" method="POST">
-        <label> Email</label>
-        <input type="email" name="email" placeholder="" style="width: 200px">
-        <label> Password</label>
-        <input type="password" name="password" placeholder="" style="width: 200px">
-        <input type="submit" value="Submit">
-    </form>
-    <a href="register">Register</a>
-
-
-<% } %>
-
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Tiny App </title>
+    </head> 
+    <body>
+        <h1>Tiny App</h1>
+        <p><b>Login</b></p>
+        <% if(user){ %>
+        <p><b>Welcome <%=user.email %></b></p>
+        <form method="POST" action="/logout">
+            <input type="submit" name="submit" value="Logout" />
+        </form>
+        <% }else{ %>
+        <form action="/login" method="POST">
+            <label> Email</label><br>
+            <input type="email" name="email" placeholder="" style="width: 200px"><br>
+            <label> Password</label><br>
+            <input type="password" name="password" placeholder="" style="width: 200px"><br><br>
+            <input type="submit" value="Submit">
+        </form>
+        <a href="register"> New User Register</a>
+        <% } %>
+    </body>
+</html>

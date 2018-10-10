@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<style>
-    table {
-        border-collapse: collapse;
-    }
-    table, th, td {
-        border: 1px solid black;
-    }
-</style>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
 </head>
-<body>
-    <h1>Tiny App</h1>
-    <% include partials/_header%>
-    <form action="/urls/<%=shortURL %>/update" method= "POST">
-        ShortURL:<%=shortURL%> <br>
-        <input type="text" name="longUrl" value="<%=longURL%>">
-        <br>
-        <input type="submit" value="UPDATE">
-    </form> 
-</body>
-
+    <body>
+        <h1>Tiny App</h1>
+        <% include partials/_header%><br/>
+        <form action="/urls/<%=shortURL %>/update" method= "POST">
+            ShortURL:<%=shortURL%> <br/><br/>
+            <input type="text" name="longUrl" value="<%=longURL%>">
+            <br/><br/>
+            <input type="submit" value="UPDATE">
+        </form> 
+    </body>
 </html>
 
