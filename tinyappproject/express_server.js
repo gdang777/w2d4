@@ -175,16 +175,16 @@ app.post('/login',(req,res)=> {
     }
 });
 
-//
+//----------POST/logout
 app.post('/logout',(req,res) => {
     req.session = null;
     res.redirect('/urls');
 });
-//
+//----------GET /Hello
 app.get('/Hello',(req,res)=> {
     res.send("<html><body>Hello <b>World</b></body<html>\n");
 });
-//
+//-------------POST /register
 app.post('/register', (req,res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -207,7 +207,7 @@ app.post('/register', (req,res) => {
     }
 });
 
-//---------------- registration page
+//---------------- registration page render
 app.get('/register', (req,res) => {
     res.render('registration');
 });
